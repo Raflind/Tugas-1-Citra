@@ -1,64 +1,55 @@
-function HistogramImage(imageArray)
+function [redCount, greenCount, blueCount] = HistogramImage(imageArray)
 
 [rows, cols, channels] = size(imageArray);
 
-% Jika gambar terdeteksi hanya memiliki 1 warna, akan menampilkan histogram
-% untuk greyscale
-if channels == 1
+% Inisialisasi histogram
+redCount = zeros(1, 256);
+greenCount = zeros(1, 256);
+blueCount = zeros(1, 256);
 
-    count = zeros(1, 256);
+% Perhitungan histogram untuk graysacle image
+if channels == 1
 
     for row = 1:rows
         for col = 1:cols
 
             pixel = imageArray(row, col);
 
-            count(double(pixel) + 1) = ...
-                count(double(pixel) + 1) + 1;
+            redCount(double(pixel) + 1) = ...
+                redCount(double(pixel) + 1) + 1;
 
         end
     end
 
-    bar(0:255, count);
-    title("Grayscale Histogram");
-    xlabel("Gray Level");
-    ylabel("Pixels");
-
-
+% Perhitungan Histogram imgae dengan 3 channel warna
 elseif channels == 3
 
-    % Pengecekan untuk gambar greyscale yang memiliki 3 channel warna
-    isGrayscale = isequal(imageArray(:,:,1), imageArray(:,:,2)) && ...
-                  isequal(imageArray(:,:,2), imageArray(:,:,3));
+    % Pengecekan untuk image grayscale dengan 3 channel warna
+    isGrayscale = isequal( ...
+        imageArray(:,:,1), ...
+        imageArray(:,:,2)) && ...
+        isequal( ...
+        imageArray(:,:,2), ...
+        imageArray(:,:,3));
 
+
+    % pemrosesan histogram image greyscale
     if isGrayscale
-
-        count = zeros(1, 256);
 
         for row = 1:rows
             for col = 1:cols
 
                 pixel = imageArray(row, col, 1);
 
-                count(double(pixel) + 1) = ...
-                    count(double(pixel) + 1) + 1;
+                redCount(double(pixel) + 1) = ...
+                    redCount(double(pixel) + 1) + 1;
 
             end
         end
 
-        bar(0:255, count);
-        title("Grayscale Histogram");
-        xlabel("Gray Level");
-        ylabel("Pixels");
 
-
-    % Gambar Berwarna akan menampilkan 3 histogram dengan channel warna R,
-    % G, dan B
+    % Pemrosesan histogram image RGB
     else
-
-        redCount = zeros(1, 256);
-        greenCount = zeros(1, 256);
-        blueCount = zeros(1, 256);
 
         for row = 1:rows
             for col = 1:cols
@@ -67,37 +58,20 @@ elseif channels == 3
                 greenPixel = imageArray(row, col, 2);
                 bluePixel = imageArray(row, col, 3);
 
+
                 redCount(double(redPixel) + 1) = ...
                     redCount(double(redPixel) + 1) + 1;
 
+
                 greenCount(double(greenPixel) + 1) = ...
                     greenCount(double(greenPixel) + 1) + 1;
+
 
                 blueCount(double(bluePixel) + 1) = ...
                     blueCount(double(bluePixel) + 1) + 1;
 
             end
         end
-
-        figure;
-
-        subplot(3,1,1);
-        bar(0:255, redCount);
-        title("Red Channel");
-        xlabel("Pixel Value");
-        ylabel("Pixels");
-
-        subplot(3,1,2);
-        bar(0:255, greenCount);
-        title("Green Channel");
-        xlabel("Pixel Value");
-        ylabel("Pixels");
-
-        subplot(3,1,3);
-        bar(0:255, blueCount);
-        title("Blue Channel");
-        xlabel("Pixel Value");
-        ylabel("Pixels");
 
     end
 
